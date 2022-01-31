@@ -1,0 +1,6 @@
+# ninja log v5
+58	170	6652993861874020	project_elf_src_esp32s2.c	faa7495685b97802
+68	190	6652993862073991	esp-idf/esp32s2/esp32s2_out.ld	199b078999b13cba
+203	1401	6652993873268271	esp-idf/mbedtls/mbedtls/library/CMakeFiles/mbedcrypto.dir/blowfish.c.obj	5b9fbb42ab6be190
+214	1457	6652993873460027	esp-idf/mbedtls/mbedtls/library/CMakeFiles/mbedcrypto.dir/chachapoly.c.obj	ce197f1468583365
+209	1645	6652993874590006	esp-idf/mbedtls/mbedtls/library/CMakeFiles/mbedcrypto.dir/camellia.c.obj	a76a3b05d419cc01
