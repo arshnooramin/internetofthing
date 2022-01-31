@@ -1,2 +1,1 @@
-# internetofthing
-An exploration of IoT and IoT devices.
+# Internet of Things (IoT)
