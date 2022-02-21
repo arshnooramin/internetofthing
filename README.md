@@ -4,5 +4,5 @@ This repository contains an extensive exploration of IoT and IoT device. The rep
 
 ## Repository Structure
 * [`wiki`](https://github.com/arshnooramin/internetofthings/wiki): Includes discussion, definitions, and explorations related to IoT and Networks.
-* `blink_red`: Program to blink RGB LED Red with a long (~ 1 sec) delay.
+* `blink_red`: Program to blink RGB LED Red with a long (~1000 ms) delay.
 * `rmt_servo`: Program to control a servo motor and RGB LED with an IR remote control.
