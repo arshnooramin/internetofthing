@@ -1,4 +1,4 @@
-# Example ESP-IDF Project: RMT LED Strip Blink
+# RMT LED Strip Blink
 
 This is an example project based on the [RMT LED Strip project](https://github.com/espressif/esp-idf/blob/master/examples/peripherals/rmt/led_strip/). The original project functions to blink the built-in LED at a high frequency and cycles through different colors. This modified project simplifies it so that the program now blinks the LED red with a longer delay.
 
