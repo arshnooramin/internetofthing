@@ -1,26 +1,28 @@
-<<<<<<< HEAD
-# RMT Server Project
-=======
-| Supported Targets | ESP32 |
-| ----------------- | ----- |
+# Controlling a Servo-Motor and RGB Lights with IR Remote Control
 
-# MCPWM servo motor control Example
+## Purpose and Functionality
+The purpose of this project is to control the built-in WS2812 RGB LED and an external SG-90 (or any generic) servo motor with an IR remote control. The remote control allows to set colors and brightness on the RGB LED and the angle of the servo.
 
-This example will show you how to use MCPWM module to control servo motor
+## Peripherals
+This project combines the functionalities of three ESP32 Peripherals into one project:
+* RMT for IR Remote Control and WS2812 RGB LED
+* LEDC PWM for Servo Control
+
+## How to Use Program?
+This repository includes the code needed to run the program on a ESP32 board (compiled, flashed, and tested on ESP32-S2 board)
+
+### Hardware Required
+* ESP32 development board
+* WS2812 LED Strip
+* SG-90 Servo Motor
+* IR Remote Control
+* IR Receiver
+
+### Connection
+NOTE: The pin configurations can be modified using the `menuconfig` or by editing the main source program `mcpwm_servo_control.c`
+* GPIO5 -> Servo PWM signal
+* GPIO18 -> WS2812 LED (Built-in)
+* GPIO6 -> IR Receiver
  
-Assign pulse width range and the maximum degree, accordingly the servo will move from 0 to maximum degree continuously
- 
-
-## Step 1: Pin assignment
-* GPIO18 is assigned as the MCPWM signal for servo motor 
-
-
-## Step 2: Connection
-* connect GPIO18 with servo pwm signal
-* other two wires of servo motor are VCC and GND
-
-
-## Step 3: Initialize MCPWM
-* You need to set the frequency(generally 50 Hz) and duty cycle of MCPWM timer
-* You need to set the MCPWM channel you want to use, and bind the channel with one of the timers
->>>>>>> servocontrol
+## How Program Works?
+The program works by using the RMT library to receive decoded data from the IR receiver when a button is pressed on the IR remote. Once the hex code for a valid button on the IR remote control is detected it sends a signal to the WS2812 LED or a PWM signal to the Servo.
