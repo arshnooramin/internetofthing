@@ -43,11 +43,11 @@ void app_main(void)
     while (true) {
         // Build RGB values
         // Write RGB values to strip driver
-        ESP_ERROR_CHECK(strip->set_pixel(strip, 0, 255, 0, 0));
+        ESP_ERROR_CHECK(strip->set_pixel(strip, 0, 0, 255, 0));
         // Flush RGB values to LEDs
         ESP_ERROR_CHECK(strip->refresh(strip, 100));
-        vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
-        strip->clear(strip, 50);
-        vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
+        // vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
+        // strip->clear(strip, 50);
+        // vTaskDelay(pdMS_TO_TICKS(EXAMPLE_CHASE_SPEED_MS));
     }
 }
