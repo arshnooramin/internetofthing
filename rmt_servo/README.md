@@ -9,7 +9,7 @@ This project combines the functionalities of three ESP32 Peripherals into one pr
 * LEDC PWM for Servo Control
 
 ## How to Use Program?
-This repository includes the code needed to run the program on a ESP32 board (compiled, flashed, and tested on ESP32-S2 board)
+This repository includes the code needed to run the program on a ESP32 board (compiled, flashed, and tested on ESP32-S2 board) along with details for how to set up the circuit and what components are required.
 
 ### Hardware Required
 * ESP32 development board
