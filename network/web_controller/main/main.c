@@ -34,6 +34,7 @@ MessageBufferHandle_t xMessageBufferMain;
 MessageBufferHandle_t xMessageBufferMqtt;
 
 const static int client_queue_size = 10;
+int gpio_pin;
 
 /* FreeRTOS event group to signal when we are connected*/
 static EventGroupHandle_t s_wifi_event_group;
@@ -187,11 +188,24 @@ static esp_err_t obtain_time(void)
 	return ESP_OK;
 }
 
+static void blink_led(void)
+{
+    /* Set the GPIO level according to the state (LOW or HIGH)*/
+    gpio_set_level(2, 1);
+}
+
+static void configure_led(void)
+{
+    ESP_LOGI(TAG, "Example configured to blink GPIO LED!");
+    gpio_reset_pin(gpio_pin);
+    /* Set the GPIO as a push/pull output */
+    gpio_set_direction(gpio_pin, GPIO_MODE_OUTPUT);
+}
 
 // handles websocket events
 void websocket_callback(uint8_t num,WEBSOCKET_TYPE_t type,char* msg,uint64_t len) {
 	const static char* TAG = "websocket_callback";
-	//int value;
+	int value;
 
 	switch(type) {
 		case WEBSOCKET_CONNECT:
@@ -208,6 +222,23 @@ void websocket_callback(uint8_t num,WEBSOCKET_TYPE_t type,char* msg,uint64_t len
 			break;
 		case WEBSOCKET_TEXT:
 			if(len) { // if the message length was greater than zero
+				switch(msg[0]) {
+					case 'R':
+						if (sscanf(msg, "R GPIO%i", &gpio_pin)) {
+							ESP_LOGI(TAG, "reseting GPIO%i", gpio_pin);
+							gpio_reset_pin(gpio_pin);
+						}
+						break;
+					case 'O':
+						if (sscanf(msg, "O GPIO%i %i", &gpio_pin, &value)) {
+							ESP_LOGI(TAG, "setting GPIO%i as output %i", gpio_pin, value);
+							gpio_reset_pin(gpio_pin);
+							/* Set the GPIO as a push/pull output */
+							gpio_set_direction(gpio_pin, GPIO_MODE_OUTPUT);
+							gpio_set_level(gpio_pin, value);
+						}
+						break;
+				}
 				ESP_LOGI(TAG, "got message length %i: %s", (int)len, msg);
 				size_t xBytesSent = xMessageBufferSend(xMessageBufferMain, msg, len, portMAX_DELAY);
 				if (xBytesSent != len) {
@@ -463,34 +494,9 @@ static void time_task(void* pvParameters) {
 	}
 }
 
-static uint8_t s_led_state = 0;
-
-static void blink_led(void)
-{
-    /* Set the GPIO level according to the state (LOW or HIGH)*/
-    gpio_set_level(2, s_led_state);
-}
-
-static void configure_led(void)
-{
-    ESP_LOGI(TAG, "Example configured to blink GPIO LED!");
-    gpio_reset_pin(2);
-    /* Set the GPIO as a push/pull output */
-    gpio_set_direction(2, GPIO_MODE_OUTPUT);
-}
-
 void mqtt(void *pvParameters);
 
 void app_main() {
-	configure_led();
-
-	while (1) {
-        ESP_LOGI(TAG, "Turning the LED %s!", s_led_state == true ? "ON" : "OFF");
-        blink_led();
-        /* Toggle the LED state */
-        s_led_state = !s_led_state;
-        vTaskDelay(500);
-    }
 
 	//Initialize NVS
 	esp_err_t ret = nvs_flash_init();
@@ -548,6 +554,7 @@ void app_main() {
 		size_t readBytes = xMessageBufferReceive(xMessageBufferMain, cRxBuffer, sizeof(cRxBuffer), portMAX_DELAY );
 		ESP_LOGI(pcTaskGetTaskName(NULL), "readBytes=%d", readBytes);
 		cJSON *root = cJSON_Parse(cRxBuffer);
+
 		if (cJSON_GetObjectItem(root, "id")) {
 			char *id = cJSON_GetObjectItem(root,"id")->valuestring;
 			ESP_LOGI(TAG, "id=%s",id);

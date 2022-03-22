@@ -1,6 +1,59 @@
 //document.getElementById("datetime").innerHTML = "WebSocket is not connected";
 
 var websocket = new WebSocket('ws://'+location.hostname+'/');
+document.getElementsByName("mode")[0].checked = true;
+document.getElementsByName("level")[0].checked = true;
+var selected = ""
+
+// function sendMsg() {
+// 	websocket.send("O");
+// }
+
+function openModal() {
+	document.getElementById('modal-title').innerHTML = "Setting " + event.target.id;
+	selected = event.target.id;
+	document.getElementById("modal-js").classList.add("is-active");
+}
+
+function closeModal() {
+	document.getElementById("modal-js").classList.remove("is-active");
+}
+
+function update() {
+	var data = "";
+	var mode = document.getElementsByName("mode");
+	if (mode[0].checked) { // Reset
+		document.getElementById(selected).classList.remove("is-primary", "is-warning");
+		document.getElementById(selected).classList.add("is-info", "is-light");
+		data = "R ";
+	}
+	else if (mode[1].checked) {
+		document.getElementById(selected).classList.remove("is-primary", "is-info", "is-light");
+		document.getElementById(selected).classList.add("is-warning");
+		data = "O ";
+	}
+	else if (mode[2].checked) {
+		document.getElementById(selected).classList.remove("is-warning", "is-info", "is-light");
+		document.getElementById(selected).classList.add("is-primary");
+		data = "I ";
+	}
+	data += selected;
+	var x = document.getElementsByName("level");
+	var i;
+	for (i = 0; i < x.length; i++) {
+		if (x[i].checked) {
+			document.getElementById(selected + "_span").innerHTML = x[i].value;
+			if (x[i].value == "HIGH") {
+				data += " 1"
+			} else if (x[i].value == "LOW") {
+				data += " 0"
+			}
+		}
+	}
+	websocket.send(data);
+	closeModal();
+}
+
 
 function getTextValueByName(name) {
 	var textbox = document.getElementsByName(name)
