@@ -35,6 +35,7 @@ MessageBufferHandle_t xMessageBufferMqtt;
 
 const static int client_queue_size = 10;
 int gpio_pin;
+int reading = NULL;
 
 /* FreeRTOS event group to signal when we are connected*/
 static EventGroupHandle_t s_wifi_event_group;
@@ -206,6 +207,7 @@ static void configure_led(void)
 void websocket_callback(uint8_t num,WEBSOCKET_TYPE_t type,char* msg,uint64_t len) {
 	const static char* TAG = "websocket_callback";
 	int value;
+	int reading;
 
 	switch(type) {
 		case WEBSOCKET_CONNECT:
@@ -236,6 +238,16 @@ void websocket_callback(uint8_t num,WEBSOCKET_TYPE_t type,char* msg,uint64_t len
 							/* Set the GPIO as a push/pull output */
 							gpio_set_direction(gpio_pin, GPIO_MODE_OUTPUT);
 							gpio_set_level(gpio_pin, value);
+						}
+						break;
+					case 'I':
+						if (sscanf(msg, "I GPIO%i", &gpio_pin)) {
+							ESP_LOGI(TAG, "setting GPIO%i as input", gpio_pin);
+							gpio_reset_pin(gpio_pin);
+							/* Set the GPIO as a push/pull output */
+							gpio_set_direction(gpio_pin, GPIO_MODE_INPUT);
+							reading = gpio_get_level(gpio_pin);
+							ESP_LOGI(TAG, "GPIO%i value %i", gpio_pin, reading);
 						}
 						break;
 				}
@@ -485,7 +497,17 @@ static void time_task(void* pvParameters) {
 		ESP_LOGD(TAG, "The current time is: %s", strftime_buf);
 
 		char out[64];
-		int len = makeSendText(out, "ID", "datetime", "value", strftime_buf);
+		int len;
+		int val = *((int*) pvParameters);
+		ESP_LOGI(TAG, "output=====%i", val);
+		if (val == 1) {
+			len = makeSendText(out, "ID", "datetime", "high", strftime_buf);
+		} else if (val == 0) {
+			len = makeSendText(out, "ID", "datetime", "low", strftime_buf);
+		} else {
+			len = makeSendText(out, "ID", "datetime", "none", strftime_buf);
+		}
+		
 		int clients = ws_server_send_text_all(out,len);
 		if(clients > 0) {
 			//ESP_LOGI(TAG,"sent: \"%s\" to %i clients",out,clients);
@@ -545,7 +567,7 @@ void app_main() {
 	ws_server_start();
 	xTaskCreate(&server_task, "server_task", 1024*2, (void *)cparam0, 9, NULL);
 	xTaskCreate(&server_handle_task, "server_handle_task", 1024*3, NULL, 6, NULL);
-	xTaskCreate(&time_task, "time_task", 1024*2, NULL, 2, NULL);
+	xTaskCreate(&time_task, "time_task", 1024*2, (void*)&reading, 2, NULL);
 	xTaskCreate(mqtt, "mqtt_task", 1024*4, NULL, 2, NULL);
 
 	char cRxBuffer[512];
@@ -554,6 +576,7 @@ void app_main() {
 		size_t readBytes = xMessageBufferReceive(xMessageBufferMain, cRxBuffer, sizeof(cRxBuffer), portMAX_DELAY );
 		ESP_LOGI(pcTaskGetTaskName(NULL), "readBytes=%d", readBytes);
 		cJSON *root = cJSON_Parse(cRxBuffer);
+
 
 		if (cJSON_GetObjectItem(root, "id")) {
 			char *id = cJSON_GetObjectItem(root,"id")->valuestring;

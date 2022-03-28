@@ -23,18 +23,18 @@ function update() {
 	var data = "";
 	var mode = document.getElementsByName("mode");
 	if (mode[0].checked) { // Reset
-		document.getElementById(selected).classList.remove("is-primary", "is-warning");
-		document.getElementById(selected).classList.add("is-info", "is-light");
+		document.getElementById(selected).classList.remove("is-link", "is-warning");
+		document.getElementById(selected).classList.add("is-black");
 		data = "R ";
 	}
 	else if (mode[1].checked) {
-		document.getElementById(selected).classList.remove("is-primary", "is-info", "is-light");
+		document.getElementById(selected).classList.remove("is-link", "is-black");
 		document.getElementById(selected).classList.add("is-warning");
 		data = "O ";
 	}
 	else if (mode[2].checked) {
-		document.getElementById(selected).classList.remove("is-warning", "is-info", "is-light");
-		document.getElementById(selected).classList.add("is-primary");
+		document.getElementById(selected).classList.remove("is-warning", "is-black");
+		document.getElementById(selected).classList.add("is-link");
 		data = "I ";
 	}
 	data += selected;
@@ -44,9 +44,17 @@ function update() {
 		if (x[i].checked) {
 			document.getElementById(selected + "_span").innerHTML = x[i].value;
 			if (x[i].value == "HIGH") {
-				data += " 1"
+				data += " 1";
+				document.getElementById(selected + "_span").classList.remove("is-black", "is-danger");
+				document.getElementById(selected + "_span").classList.add("is-success");
 			} else if (x[i].value == "LOW") {
-				data += " 0"
+				data += " 0";
+				document.getElementById(selected + "_span").classList.remove("is-black", "is-success");
+				document.getElementById(selected + "_span").classList.add("is-danger");
+			} else if (x[i].value == "None") {
+				data += " 0";
+				document.getElementById(selected + "_span").classList.remove("is-danger", "is-success");
+				document.getElementById(selected + "_span").classList.add("is-black");
 			}
 		}
 	}
@@ -121,7 +129,7 @@ websocket.onopen = function(evt) {
 	json_data = JSON.stringify(data);
 	console.log('json_data=' + json_data);
 	websocket.send(json_data);
-	//document.getElementById("datetime").innerHTML = "WebSocket is connected!";
+	document.getElementById("status").innerHTML = "Connected.";
 }
 
 websocket.onmessage = function(evt) {
@@ -134,8 +142,6 @@ websocket.onmessage = function(evt) {
 			console.log("ID values[1]=" + values[1]);
 			console.log("ID values[2]=" + values[2]);
 			console.log("ID values[3]=" + values[3]);
-			if (values[2] == "value") document.getElementById(values[1]).innerHTML = values[3];
-			if (values[2] == "bcolor") document.getElementById(values[1]).style.backgroundColor = values[3];
 			break;
 
 		case 'MQTT':
@@ -164,10 +170,12 @@ websocket.onmessage = function(evt) {
 
 websocket.onclose = function(evt) {
 	console.log('Websocket connection closed');
+	document.getElementById("status").innerHTML = "Disconnected.";
 	//document.getElementById("datetime").innerHTML = "WebSocket closed";
 }
 
 websocket.onerror = function(evt) {
 	console.log('Websocket error: ' + evt);
+	document.getElementById("status").innerHTML = "Disconnected.";
 	//document.getElementById("datetime").innerHTML = "WebSocket error????!!!1!!";
 }
