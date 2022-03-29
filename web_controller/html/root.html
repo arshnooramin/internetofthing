@@ -77,28 +77,28 @@
 					<div class="tile is-child notification is-info">
 						<p class="title">Controller</p>
 						<div class="notification has-background-dark">
-							<div class="block columns">
-								<div class="column">
+							<div id="pins1" class="block columns">
+								<div id="GND_pin" class="column">
 									<span id="GND_span" class="mb-1 is-rounded is-danger is-flex tag">LOW</span>
 									<button onclick="openModal()" id="GND" class="button is-black is-fullwidth" disabled>GND</button>
 								</div>
-								<div class="column">
+								<div id="RST_pin" class="column">
 									<span id="RST_span" class="mb-1 is-rounded is-black is-flex tag">None</span>
 									<button onclick="openModal()" id="RST" class="button is-black is-fullwidth" disabled>RST</button>
 								</div>
-								<div class="column">
+								<div id="GPIO42_pin" class="column">
 									<span id="GPIO42_span" class="mb-1 is-rounded is-black is-flex tag">None</span>
 									<button onclick="openModal()" id="GPIO42" class="button is-black is-fullwidth">GPIO42</button>
 								</div>
-								<div class="column">
+								<div id="GPIO41_pin" class="column">
 									<span id="GPIO41_span" class="mb-1 is-rounded is-black is-flex tag">None</span>
 									<button onclick="openModal()" id="GPIO41" class="button is-black is-fullwidth">GPIO41</button>
 								</div>
-								<div class="column">
+								<div id="RX_pin" class="column">
 									<span id="RX_span" class="mb-1 is-rounded is-black is-flex tag">None</span>
 									<button onclick="openModal()" id="RX" class="button is-black is-fullwidth" disabled>RX</button>
 								</div>
-								<div class="column">
+								<div id="TX_pin" class="column">
 									<span id="TX_span" class="mb-1 is-rounded is-black is-flex tag">None</span>
 									<button onclick="openModal()" id="TX" class="button is-black is-fullwidth" disabled>TX</button>
 								</div>
@@ -106,30 +106,30 @@
 							<div class="block tile has-text-white is-4 has-background-grey notification is-light">
 								<div class=""><h1 class="mb-1 title is-4">ESPRESSIF<h1><h1 class="mb-2 title is-6">ESP32-S2<h1></h1></div>
 							</div>
-							<div class="block columns">
-								<div class="column">
+							<div id="pins2" class="block columns">
+								<div id="3V3_pin" class="column">
 									<button onclick="openModal()" id="3V3" class="button is-black is-fullwidth" disabled>3V3</button>
 									<span id="3V3_span" class="mt-1 is-rounded is-success is-flex tag">HIGH</span>
 								</div>
-								<div class="column">
-									<button onclick="openModal()" id="GPIO0" class="button is-black is-fullwidth">GPIO0</button>
-									<span id="GPIO0_span" class="mt-1 is-rounded is-black is-flex tag">None</span>
-								</div>
-								<div class="column">
+								<div id="GPIO1_pin" class="column">
 									<button onclick="openModal()" id="GPIO1" class="button is-black is-fullwidth">GPIO1</button>
 									<span id="GPIO1_span" class="mt-1 is-rounded is-black is-flex tag">None</span>
 								</div>
-								<div class="column">
+								<div id="GPIO2_pin" class="column">
 									<button onclick="openModal()" id="GPIO2" class="button is-black is-fullwidth">GPIO2</button>
 									<span id="GPIO2_span" class="mt-1 is-rounded is-black is-flex tag">None</span>
 								</div>
-								<div class="column">
+								<div id="GPIO3_pin" class="column">
 									<button onclick="openModal()" id="GPIO3" class="button is-black is-fullwidth">GPIO3</button>
 									<span id="GPIO3_span" class="mt-1 is-rounded is-black is-flex tag">None</span>
 								</div>
-								<div class="column">
+								<div id="GPIO4_pin" class="column">
 									<button onclick="openModal()" id="GPIO4" class="button is-black is-fullwidth">GPIO4</button>
 									<span id="GPIO4_span" class="mt-1 is-rounded is-black is-flex tag">None</span>
+								</div>
+								<div id="GPIO5_pin" class="column">
+									<button onclick="openModal()" id="GPIO5" class="button is-black is-fullwidth">GPIO5</button>
+									<span id="GPIO5_span" class="mt-1 is-rounded is-black is-flex tag">None</span>
 								</div>
 							</div>
 						</div>

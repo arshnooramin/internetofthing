@@ -9,6 +9,33 @@ var selected = ""
 // 	websocket.send("O");
 // }
 
+var getInput = setInterval(function() {
+	var x = document.getElementById("pins1").children;
+	var i;
+	for (i = 0; i < x.length; i++) {
+		let pin = x[i].id.split("_")[0];
+		console.log(pin)
+		if (document.getElementById(pin) != null) {
+			if (document.getElementById(pin).classList.contains('is-link')) {
+				console.log('checking input at ', x[i].id);
+				websocket.send('G ' + x[i].id);
+			}
+		}
+	}
+	var x = document.getElementById("pins2").children;
+	var i;
+	for (i = 0; i < x.length; i++) {
+		let pin = x[i].id.split("_")[0];
+		console.log(pin)
+		if (document.getElementById(pin) != null) {
+			if (document.getElementById(pin).classList.contains('is-link')) {
+				console.log('checking input at ', x[i].id);
+				websocket.send('G ' + x[i].id);
+			}
+		}
+	}
+  }, 1000);
+
 function openModal() {
 	document.getElementById('modal-title').innerHTML = "Setting " + event.target.id;
 	selected = event.target.id;
@@ -152,7 +179,21 @@ websocket.onmessage = function(evt) {
 			msg.innerText = values[2] + '\nOn topic: ' + values[1];
 			document.getElementById('article').appendChild(msg);
 			break;
-
+		case 'IN':
+			if (values[2] == '0') {
+				document.getElementById(values[1] + "_span").innerHTML = "LOW";
+				document.getElementById(values[1] + "_span").classList.remove("is-black", "is-success");
+				document.getElementById(values[1] + "_span").classList.add("is-danger");
+			} else if (values[2] == '1') {
+				document.getElementById(values[1] + "_span").innerHTML = "HIGH";
+				document.getElementById(values[1] + "_span").classList.remove("is-black", "is-danger");
+				document.getElementById(values[1] + "_span").classList.add("is-success");
+			} else {
+				document.getElementById(values[1] + "_span").innerHTML = "None";
+				document.getElementById(values[1] + "_span").classList.remove("is-success", "is-danger");
+				document.getElementById(values[1] + "_span").classList.add("is-black");
+			}
+				
 /*
 		case 'NAME':
 			console.log("NAME values[1]=" + values[1]);

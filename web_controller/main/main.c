@@ -50,6 +50,14 @@ static const char *TAG = "main";
 
 static int s_retry_num = 0;
 
+static int makeSendText(char* buf, char* v1, char* v2, char* v3, char* v4)
+{
+	char DEL = 0x04;
+	sprintf(buf,"%s%c%s%c%s%c%s", v1, DEL, v2, DEL, v3, DEL, v4);
+	ESP_LOGD(TAG, "buf=[%s]", buf);
+	return strlen(buf);
+}
+
 static void event_handler(void* arg, esp_event_base_t event_base,
 																int32_t event_id, void* event_data)
 {
@@ -248,6 +256,29 @@ void websocket_callback(uint8_t num,WEBSOCKET_TYPE_t type,char* msg,uint64_t len
 							gpio_set_direction(gpio_pin, GPIO_MODE_INPUT);
 							reading = gpio_get_level(gpio_pin);
 							ESP_LOGI(TAG, "GPIO%i value %i", gpio_pin, reading);
+						}
+						break;
+					case 'G':
+						if (sscanf(msg, "G GPIO%i_pin", &gpio_pin)) {
+							time_t now;
+							time(&now);
+							now = now + (CONFIG_LOCAL_TIMEZONE*60*60);
+							struct tm timeinfo;
+							char strftime_buf[64];
+							localtime_r(&now, &timeinfo);
+							//strftime(strftime_buf, sizeof(strftime_buf), "%c", &timeinfo);
+							strftime(strftime_buf, sizeof(strftime_buf), "%H:%M:%S", &timeinfo);
+							ESP_LOGD(TAG, "The current time is: %s", strftime_buf);
+							reading = gpio_get_level(gpio_pin);
+							ESP_LOGI(TAG, "CURRENT: GPIO%i value %i", gpio_pin, reading);
+
+							char out[64];
+							char gpio_num[6];
+							char read_str[6];
+							sprintf(gpio_num, "GPIO%i", gpio_pin);
+							sprintf(read_str, "%i", reading);
+							int len = makeSendText(out, "IN", gpio_num, read_str, strftime_buf);
+							ws_server_send_text_all_from_callback(out,len);
 						}
 						break;
 				}
@@ -473,13 +504,7 @@ v2:id/name
 v3:propaty
 v4:value
 */
-static int makeSendText(char* buf, char* v1, char* v2, char* v3, char* v4)
-{
-	char DEL = 0x04;
-	sprintf(buf,"%s%c%s%c%s%c%s", v1, DEL, v2, DEL, v3, DEL, v4);
-	ESP_LOGD(TAG, "buf=[%s]", buf);
-	return strlen(buf);
-}
+
 
 static void time_task(void* pvParameters) {
 	const static char* TAG = "time_task";
@@ -498,20 +523,19 @@ static void time_task(void* pvParameters) {
 
 		char out[64];
 		int len;
-		int val = *((int*) pvParameters);
-		ESP_LOGI(TAG, "output=====%i", val);
-		if (val == 1) {
-			len = makeSendText(out, "ID", "datetime", "high", strftime_buf);
-		} else if (val == 0) {
-			len = makeSendText(out, "ID", "datetime", "low", strftime_buf);
-		} else {
-			len = makeSendText(out, "ID", "datetime", "none", strftime_buf);
-		}
+		// int val = *((int*) pvParameters);
+		// if (val == 1) {
+		// 	len = makeSendText(out, "ID", "datetime", "high", strftime_buf);
+		// } else if (val == 0) {
+		// 	len = makeSendText(out, "ID", "datetime", "low", strftime_buf);
+		// } else {
+		// 	len = makeSendText(out, "ID", "datetime", "none", strftime_buf);
+		// }
 		
-		int clients = ws_server_send_text_all(out,len);
-		if(clients > 0) {
-			//ESP_LOGI(TAG,"sent: \"%s\" to %i clients",out,clients);
-		}
+		// int clients = ws_server_send_text_all(out,len);
+		// if(clients > 0) {
+		// 	//ESP_LOGI(TAG,"sent: \"%s\" to %i clients",out,clients);
+		// }
 		vTaskDelay(1000/portTICK_PERIOD_MS);
 	}
 }
