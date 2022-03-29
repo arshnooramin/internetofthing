@@ -9,3 +9,4 @@ This repository contains an extensive exploration of IoT and IoT device. The rep
   * `rmt_servo`: Program to control a servo motor and RGB LED with an IR remote control
 * `networks`: Implmentation of simple networking protocols for ESP32
   * `udp` and `tcp`: Establish a connection between ESP32 dev board (client) and a Windows PC (server) using UDP and TCP protocols
+* `web_controller`: Program to use networking to create a web-based GUI controller for the ESP32-S2 GPIO
