@@ -9,6 +9,8 @@ The purpose of this project is to begin developing an ESP32 based IoT oscillosco
   * Set the voltage on the set GPIO as HIGH (1) or LOW (0)
 * Provides a web-based GUI (shown below) to allow users to perform the aforementioned functions
 
+![web-gpio-controller](https://user-images.githubusercontent.com/38775985/165759449-06b271b9-75a1-4e0a-8d3c-270aa73b0d97.png)
+
 ## Hardware Required
 This project only uses a ESP32-S2 development board for its integral functionality however the following additional hardware can be used to test the functionalities of this project:
 * ESP32 development board
