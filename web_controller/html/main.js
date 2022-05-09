@@ -9,7 +9,17 @@ var selected = ""
 // 	websocket.send("O");
 // }
 
+TESTER = document.getElementById('tester');
+Plotly.newPlot( TESTER, [{
+x: [1, 2, 3, 4, 5],
+y: [1, 2, 4, 8, 16] }], {
+margin: { t: 0 }}, {displayModeBar: false} );
+
 var getInput = setInterval(function() {
+	Plotly.update(TESTER, [{
+		x: [1, 2, 3, 4, 5, 6],
+		y: [1, 2, 4, 8, 16, 32] }])
+	
 	var x = document.getElementById("pins1").children;
 	var i;
 	for (i = 0; i < x.length; i++) {
